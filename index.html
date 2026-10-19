@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinCalc Pro — Commercial Loan Calculator</title>
+  <title>FinCalc Pro — Business Loan Calculator</title>
   
   <!-- Tailwind CSS Framework -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -77,9 +77,9 @@
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
             <label for="amountInput" class="text-sm font-medium text-slate-700">Loan Amount ($)</label>
-            <input type="number" id="amountInput" class="w-32 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1000" max="2000000" step="5000">
+            <input type="number" id="amountInput" class="w-36 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1000" max="2000000" step="1000">
           </div>
-          <input type="range" id="amountRange" class="w-full" min="1000" max="2000000" step="5000">
+          <input type="range" id="amountRange" class="w-full" min="1000" max="2000000" step="1000">
           <div class="flex justify-between text-xs text-slate-400 mt-1">
             <span>$1,000</span>
             <span>$2,000,000</span>
@@ -103,35 +103,4 @@
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
             <label for="termInput" class="text-sm font-medium text-slate-700">Loan Term (Years)</label>
-            <input type="number" id="termInput" class="w-20 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1" max="30" step="1">
-          </div>
-          <input type="range" id="termRange" class="w-full" min="1" max="30" step="1">
-          <div class="flex justify-between text-xs text-slate-400 mt-1">
-            <span>1 Year</span>
-            <span>30 Years</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- RESULTS, SUMMARY & VISUAL DISPLAY LAYER -->
-      <div class="lg:col-span-6 space-y-6">
-        
-        <!-- Estimated Payment Card -->
-        <div class="bg-blue-900 text-white rounded-xl shadow-md p-6 sm:p-8">
-          <span class="text-xs uppercase tracking-wider text-blue-300 font-semibold">Estimated Monthly Payment</span>
-          <div id="monthlyPaymentDisplay" class="text-4xl sm:text-5xl font-extrabold mt-2 text-white">$0.00</div>
-        </div>
-
-        <!-- Payment Breakdown Visual Card -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
-          <h3 class="text-lg font-bold text-slate-800 mb-4">Payment Breakdown Visual</h3>
-          
-          <!-- Native Donut Graph (SVG) -->
-          <div class="relative w-full h-48 flex justify-center items-center mb-6">
-            <svg class="w-40 h-40 transform -rotate-90" viewBox="0 0 36 36">
-              <!-- Background Circle (Interest - Amber) -->
-              <path class="text-amber-500" stroke="currentColor" stroke-width="4" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <!-- Foreground Circle (Principal - Blue) -->
-              <path id="donutPrincipal" class="text-blue-600 transition-all duration-300" stroke="currentColor" stroke-width="4" stroke-dasharray="85, 100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-            <div class="absolute inset-0 flex flex-col
+            <input type="number" id="termInput" class="w-24 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="
