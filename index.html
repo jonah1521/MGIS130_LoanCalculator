@@ -8,10 +8,7 @@
   <!-- Tailwind CSS Framework -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Chart.js for Visual Data Visualization -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- Custom Input Polish -->
+  <!-- Custom Slider Polish -->
   <style>
     input[type=range] {
       -webkit-appearance: none;
@@ -80,9 +77,9 @@
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
             <label for="amountInput" class="text-sm font-medium text-slate-700">Loan Amount ($)</label>
-            <input type="number" id="amountInput" class="w-32 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1000" max="2000000" step="5000" value="250000">
+            <input type="number" id="amountInput" class="w-32 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1000" max="2000000" step="5000">
           </div>
-          <input type="range" id="amountRange" class="w-full" min="1000" max="2000000" step="5000" value="250000">
+          <input type="range" id="amountRange" class="w-full" min="1000" max="2000000" step="5000">
           <div class="flex justify-between text-xs text-slate-400 mt-1">
             <span>$1,000</span>
             <span>$2,000,000</span>
@@ -93,9 +90,9 @@
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
             <label for="rateInput" class="text-sm font-medium text-slate-700">Annual Interest Rate (%)</label>
-            <input type="number" id="rateInput" class="w-24 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="0" max="25" step="0.1" value="6.5">
+            <input type="number" id="rateInput" class="w-24 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="0" max="25" step="0.1">
           </div>
-          <input type="range" id="rateRange" class="w-full" min="0" max="25" step="0.1" value="6.5">
+          <input type="range" id="rateRange" class="w-full" min="0" max="25" step="0.1">
           <div class="flex justify-between text-xs text-slate-400 mt-1">
             <span>0%</span>
             <span>25%</span>
@@ -106,9 +103,9 @@
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
             <label for="termInput" class="text-sm font-medium text-slate-700">Loan Term (Years)</label>
-            <input type="number" id="termInput" class="w-20 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1" max="30" step="1" value="5">
+            <input type="number" id="termInput" class="w-20 px-3 py-1.5 border border-slate-300 rounded-md text-right font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" min="1" max="30" step="1">
           </div>
-          <input type="range" id="termRange" class="w-full" min="1" max="30" step="1" value="5">
+          <input type="range" id="termRange" class="w-full" min="1" max="30" step="1">
           <div class="flex justify-between text-xs text-slate-400 mt-1">
             <span>1 Year</span>
             <span>30 Years</span>
@@ -116,201 +113,25 @@
         </div>
       </div>
 
-      <!-- RESULTS, SUMMARY & CHART DISPLAY LAYER -->
+      <!-- RESULTS, SUMMARY & VISUAL DISPLAY LAYER -->
       <div class="lg:col-span-6 space-y-6">
         
         <!-- Estimated Payment Card -->
         <div class="bg-blue-900 text-white rounded-xl shadow-md p-6 sm:p-8">
           <span class="text-xs uppercase tracking-wider text-blue-300 font-semibold">Estimated Monthly Payment</span>
-          <div id="monthlyPaymentDisplay" class="text-4xl sm:text-5xl font-extrabold mt-2 text-white">$4,891.54</div>
+          <div id="monthlyPaymentDisplay" class="text-4xl sm:text-5xl font-extrabold mt-2 text-white">$0.00</div>
         </div>
 
-        <!-- Visual Breakdown & Chart Card -->
+        <!-- Payment Breakdown Visual Card -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
           <h3 class="text-lg font-bold text-slate-800 mb-4">Payment Breakdown Visual</h3>
           
-          <!-- Doughnut Chart Canvas -->
-          <div class="relative w-full h-52 flex justify-center items-center mb-6">
-            <canvas id="breakdownChart"></canvas>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4 text-sm">
-            <div class="border-l-4 border-blue-600 pl-3">
-              <span class="text-slate-500 text-xs block">Principal Amount</span>
-              <span id="principalDisplay" class="font-bold text-slate-800 text-base">$250,000.00</span>
-            </div>
-            <div class="border-l-4 border-amber-500 pl-3">
-              <span class="text-slate-500 text-xs block">Total Interest</span>
-              <span id="interestDisplay" class="font-bold text-slate-800 text-base">$43,492.40</span>
-            </div>
-          </div>
-
-          <div class="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-sm">
-            <span class="font-medium text-slate-600">Total Repayment Amount:</span>
-            <span id="totalRepaymentDisplay" class="font-extrabold text-slate-900 text-lg">$293,492.40</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- AMORTIZATION SCHEDULE TABLE -->
-    <div class="mt-8 bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
-      <h3 class="text-lg font-bold text-slate-800 mb-4">First Year Amortization Schedule</h3>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b border-slate-200 text-xs uppercase text-slate-400 font-semibold">
-              <th class="py-3 px-2">Month</th>
-              <th class="py-3 px-2">Payment</th>
-              <th class="py-3 px-2">Principal</th>
-              <th class="py-3 px-2">Interest</th>
-              <th class="py-3 px-2 text-right">Remaining Balance</th>
-            </tr>
-          </thead>
-          <tbody id="scheduleTableBody" class="text-sm divide-y divide-slate-100">
-            <!-- Dynamic Amortization Rows -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-
-  <!-- EMBEDDED JAVASCRIPT LAYER -->
-  <script>
-    let breakdownChartInstance = null;
-
-    // 1. DATA LAYER
-    const DataLayer = {
-      STORAGE_KEY: 'mgis130_loan_calc_data',
-      defaults: { loanAmount: 250000, interestRate: 6.5, loanTermYears: 5 },
-
-      saveData(data) {
-        try {
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
-        } catch (e) {}
-      },
-
-      loadData() {
-        try {
-          const saved = localStorage.getItem(this.STORAGE_KEY);
-          return saved ? JSON.parse(saved) : { ...this.defaults };
-        } catch (e) {
-          return { ...this.defaults };
-        }
-      }
-    };
-
-    // 2. PROCESSING LAYER
-    const ProcessingLayer = {
-      calculateMonthlyPayment(principal, annualRatePct, years) {
-        if (principal <= 0 || years <= 0) return 0;
-        if (annualRatePct <= 0) return principal / (years * 12);
-
-        const monthlyRate = (annualRatePct / 100) / 12;
-        const totalPayments = years * 12;
-
-        const payment = principal * 
-          (monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / 
-          (Math.pow(1 + monthlyRate, totalPayments) - 1);
-
-        return isNaN(payment) || !isFinite(payment) ? 0 : payment;
-      },
-
-      calculateLoanSummary(principal, annualRatePct, years) {
-        const monthlyPayment = this.calculateMonthlyPayment(principal, annualRatePct, years);
-        const totalPaymentsCount = years * 12;
-        const totalRepayment = monthlyPayment * totalPaymentsCount;
-        const totalInterest = Math.max(0, totalRepayment - principal);
-
-        return { monthlyPayment, totalInterest, totalRepayment };
-      },
-
-      generateAmortizationSchedule(principal, annualRatePct, years) {
-        const schedule = [];
-        const monthlyPayment = this.calculateMonthlyPayment(principal, annualRatePct, years);
-        const monthlyRate = (annualRatePct / 100) / 12;
-        let balance = principal;
-
-        const displayMonths = Math.min(12, years * 12);
-
-        for (let month = 1; month <= displayMonths; month++) {
-          const interestForMonth = balance * monthlyRate;
-          const principalForMonth = monthlyPayment - interestForMonth;
-          balance = Math.max(0, balance - principalForMonth);
-
-          schedule.push({
-            month,
-            payment: monthlyPayment,
-            principalPaid: principalForMonth,
-            interestPaid: interestForMonth,
-            remainingBalance: balance
-          });
-        }
-
-        return schedule;
-      },
-
-      formatCurrency(val) {
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          maximumFractionDigits: 2
-        }).format(val || 0);
-      }
-    };
-
-    // 3. USER INTERFACE LAYER
-    const UILayer = {
-      init() {
-        this.initChart();
-        this.bindEvents();
-        this.loadInitialState();
-      },
-
-      initChart() {
-        const canvas = document.getElementById('breakdownChart');
-        if (!canvas || typeof Chart === 'undefined') return;
-
-        const ctx = canvas.getContext('2d');
-        breakdownChartInstance = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Principal', 'Total Interest'],
-            datasets: [{
-              data: [250000, 43492.40],
-              backgroundColor: ['#2563eb', '#f59e0b'],
-              borderWidth: 0,
-              hoverOffset: 4
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: { font: { size: 12 }, usePointStyle: true }
-              }
-            },
-            cutout: '70%'
-          }
-        });
-      },
-
-      loadInitialState() {
-        const data = DataLayer.loadData();
-        this.updateInputs(data);
-        this.calculateAndUpdate(data);
-      },
-
-      updateInputs(data) {
-        document.getElementById('amountInput').value = data.loanAmount;
-        document.getElementById('amountRange').value = data.loanAmount;
-        document.getElementById('rateInput').value = data.interestRate;
-        document.getElementById('rateRange').value = data.interestRate;
-        document.getElementById('termInput').value = data.loanTermYears;
-        document.getElementById('termRange').value = data.loanTermYears;
-      },
-
-      getInputs() {
+          <!-- Native Donut Graph (SVG) -->
+          <div class="relative w-full h-48 flex justify-center items-center mb-6">
+            <svg class="w-40 h-40 transform -rotate-90" viewBox="0 0 36 36">
+              <!-- Background Circle (Interest - Amber) -->
+              <path class="text-amber-500" stroke="currentColor" stroke-width="4" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <!-- Foreground Circle (Principal - Blue) -->
+              <path id="donutPrincipal" class="text-blue-600 transition-all duration-300" stroke="currentColor" stroke-width="4" stroke-dasharray="85, 100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <div class="absolute inset-0 flex flex-col
