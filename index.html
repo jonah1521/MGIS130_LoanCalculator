@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinCalc Pro — Commercial Loan Calculator</title>
   
-  <!-- Tailwind CSS Framework (Loaded via CDN) -->
+  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Embedded CSS Layer (Custom Input Polish) -->
+  <!-- Chart.js for Visual Data Visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom Slider Polish -->
   <style>
     input[type=range] {
       -webkit-appearance: none;
@@ -113,7 +116,7 @@
         </div>
       </div>
 
-      <!-- RESULTS & SUMMARY DISPLAY LAYER -->
+      <!-- RESULTS, SUMMARY & CHART DISPLAY LAYER -->
       <div class="lg:col-span-6 space-y-6">
         
         <!-- Estimated Payment Card -->
@@ -122,13 +125,13 @@
           <div id="monthlyPaymentDisplay" class="text-4xl sm:text-5xl font-extrabold mt-2 text-white">$0.00</div>
         </div>
 
-        <!-- Breakdown Progress Bar & Card -->
+        <!-- Visual Breakdown & Chart Card -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
-          <h3 class="text-lg font-bold text-slate-800 mb-4">Payment Summary</h3>
+          <h3 class="text-lg font-bold text-slate-800 mb-4">Payment Breakdown Visual</h3>
           
-          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden flex mb-4">
-            <div id="principalBar" class="bg-blue-600 h-full transition-all duration-300" style="width: 50%"></div>
-            <div id="interestBar" class="bg-amber-500 h-full transition-all duration-300" style="width: 50%"></div>
+          <!-- Interactive Doughnut Chart -->
+          <div class="relative w-full h-52 flex justify-center items-center mb-6">
+            <canvas id="breakdownChart"></canvas>
           </div>
 
           <div class="grid grid-cols-2 gap-4 text-sm">
@@ -175,6 +178,9 @@
 
   <!-- EMBEDDED JAVASCRIPT LAYER -->
   <script>
+    // Global Chart Reference
+    let breakdownChartInstance = null;
+
     // 1. DATA LAYER (Storage & Persistence)
     const DataLayer = {
       STORAGE_KEY: 'mgis130_loan_calc_data',
@@ -223,9 +229,7 @@
         return {
           monthlyPayment,
           totalInterest,
-          totalRepayment,
-          principalPct: totalRepayment > 0 ? (principal / totalRepayment) * 100 : 100,
-          interestPct: totalRepayment > 0 ? (totalInterest / totalRepayment) * 100 : 0
+          totalRepayment
         };
       },
 
@@ -263,11 +267,39 @@
       }
     };
 
-    // 3. USER INTERFACE LAYER (DOM Updates & Events)
+    // 3. USER INTERFACE LAYER (DOM Updates, Chart & Events)
     const UILayer = {
       init() {
+        this.initChart();
         this.bindEvents();
         this.loadInitialState();
+      },
+
+      initChart() {
+        const ctx = document.getElementById('breakdownChart').getContext('2d');
+        breakdownChartInstance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Principal', 'Total Interest'],
+            datasets: [{
+              data: [50, 50],
+              backgroundColor: ['#2563eb', '#f59e0b'],
+              borderWidth: 0,
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { size: 12, family: 'sans-serif' }, usePointStyle: true }
+              }
+            },
+            cutout: '70%'
+          }
+        });
       },
 
       loadInitialState() {
@@ -281,83 +313,4 @@
         document.getElementById('amountRange').value = data.loanAmount;
         document.getElementById('rateInput').value = data.interestRate;
         document.getElementById('rateRange').value = data.interestRate;
-        document.getElementById('termInput').value = data.loanTermYears;
-        document.getElementById('termRange').value = data.loanTermYears;
-      },
-
-      getInputs() {
-        return {
-          loanAmount: parseFloat(document.getElementById('amountInput').value) || 0,
-          interestRate: parseFloat(document.getElementById('rateInput').value) || 0,
-          loanTermYears: parseFloat(document.getElementById('termInput').value) || 0
-        };
-      },
-
-      calculateAndUpdate(data) {
-        const inputs = data || this.getInputs();
-        
-        const summary = ProcessingLayer.calculateLoanSummary(
-          inputs.loanAmount,
-          inputs.interestRate,
-          inputs.loanTermYears
-        );
-
-        const schedule = ProcessingLayer.generateAmortizationSchedule(
-          inputs.loanAmount,
-          inputs.interestRate,
-          inputs.loanTermYears
-        );
-
-        DataLayer.saveData(inputs);
-
-        document.getElementById('monthlyPaymentDisplay').textContent = ProcessingLayer.formatCurrency(summary.monthlyPayment);
-        document.getElementById('principalDisplay').textContent = ProcessingLayer.formatCurrency(inputs.loanAmount);
-        document.getElementById('interestDisplay').textContent = ProcessingLayer.formatCurrency(summary.totalInterest);
-        document.getElementById('totalRepaymentDisplay').textContent = ProcessingLayer.formatCurrency(summary.totalRepayment);
-
-        document.getElementById('principalBar').style.width = `${summary.principalPct}%`;
-        document.getElementById('interestBar').style.width = `${summary.interestPct}%`;
-
-        const tableBody = document.getElementById('scheduleTableBody');
-        tableBody.innerHTML = schedule.map(row => `
-          <tr class="hover:bg-slate-50 transition-colors">
-            <td class="py-2.5 px-2 font-medium text-slate-700">Month ${row.month}</td>
-            <td class="py-2.5 px-2 text-slate-600">${ProcessingLayer.formatCurrency(row.payment)}</td>
-            <td class="py-2.5 px-2 text-blue-600 font-medium">${ProcessingLayer.formatCurrency(row.principalPaid)}</td>
-            <td class="py-2.5 px-2 text-amber-600 font-medium">${ProcessingLayer.formatCurrency(row.interestPaid)}</td>
-            <td class="py-2.5 px-2 text-right font-semibold text-slate-800">${ProcessingLayer.formatCurrency(row.remainingBalance)}</td>
-          </tr>
-        `).join('');
-      },
-
-      bindEvents() {
-        const syncPair = (inputId, rangeId) => {
-          const input = document.getElementById(inputId);
-          const range = document.getElementById(rangeId);
-
-          const handleUpdate = (val) => {
-            input.value = val;
-            range.value = val;
-            this.calculateAndUpdate();
-          };
-
-          input.addEventListener('input', (e) => handleUpdate(e.target.value));
-          range.addEventListener('input', (e) => handleUpdate(e.target.value));
-        };
-
-        syncPair('amountInput', 'amountRange');
-        syncPair('rateInput', 'rateRange');
-        syncPair('termInput', 'termRange');
-
-        document.getElementById('resetBtn').addEventListener('click', () => {
-          DataLayer.saveData(DataLayer.defaults);
-          this.updateInputs(DataLayer.defaults);
-          this.calculateAndUpdate(DataLayer.defaults);
-        });
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => UILayer.init());
-  </script>
-</body>
-</html>
+        document
